@@ -33,32 +33,6 @@ type webData struct {
 	Content   string            `json:"content"`
 }
 
-type esbulk struct {
-	Index  string
-	Action string
-}
-
-func (e *esbulk) MarshalJSON() ([]byte, error) {
-	index := make(map[string]interface{})
-	index["_index"] = e.Index
-
-	internalAction := "index"
-	switch e.Action {
-	case "index":
-		internalAction = e.Action
-	case "create":
-		internalAction = e.Action
-	case "delete":
-		internalAction = e.Action
-	case "update":
-		internalAction = e.Action
-	}
-
-	action := make(map[string]interface{})
-	action[internalAction] = index
-	return json.Marshal(action)
-}
-
 func run() error {
 
 	files, err := ioutil.ReadDir(".")
@@ -82,6 +56,10 @@ func handleWARCFile(file fs.FileInfo) error {
 	}
 
 	if !strings.HasSuffix(file.Name(), "warc.gz") {
+		return nil
+	}
+
+	if file.Size() == 0 {
 		return nil
 	}
 
@@ -116,7 +94,6 @@ func handleWARCFile(file fs.FileInfo) error {
 
 func warcToNDJSON(w io.Writer, r io.Reader) error {
 	numRecords := math.MaxInt32
-	index := "sample-data"
 
 	wr, err := warc.NewReader(io.NopCloser(r))
 	if err != nil {
@@ -139,20 +116,11 @@ func warcToNDJSON(w io.Writer, r io.Reader) error {
 				return err
 			}
 
-			idx := &esbulk{
-				Index: index,
-			}
-			jBytes, err := json.Marshal(&idx)
+			jBytes, err := json.Marshal(&wd)
 			if err != nil {
 				return err
 			}
-			fmt.Fprintf(w, "%s\n",string(jBytes))
-
-			jBytes, err = json.Marshal(&wd)
-			if err != nil {
-				return err
-			}
-			fmt.Fprintf(w, "%s\n",string(jBytes))
+			fmt.Fprintf(w, "%s\n", string(jBytes))
 		}
 	}
 

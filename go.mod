@@ -1,4 +1,4 @@
-module github.com/austinarmbruster/warc-to-json
+module github.com/austinarmbruster/warc-to-ndjson
 
 go 1.16
 

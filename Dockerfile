@@ -1,5 +1,5 @@
 # Inspiration from https://medium.com/@chemidy/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
-FROM golang:1.18-alpine as builder
+FROM golang:1.17-alpine as builder
 
 # Create appuser
 RUN adduser -D -g '' appuser

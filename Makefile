@@ -1,7 +1,7 @@
 all: dockertag
 
 PROJECT=aa
-IMAGE=web-data-loading
+IMAGE=warc-to-ndjson
 LABEL=0.1
 
 .PHONY: dockerbuild
